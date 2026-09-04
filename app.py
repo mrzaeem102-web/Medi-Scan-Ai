@@ -1032,4 +1032,935 @@ elif page == "🩸 Diabetes":
                 )
 
 
-                if prediction
+                if prediction == 1:
+
+                    result = "Higher model-predicted risk"
+
+                else:
+
+                    result = "Lower model-predicted risk"
+
+
+                show_result(
+                    "Diabetes Model Output",
+                    result,
+                    probability,
+                )
+
+
+                if prediction == 1:
+
+                    st.markdown(
+                        """
+                        <div class="warning-box">
+
+                            ⚠️ The model predicts a higher
+                            likelihood of diabetes based on
+                            the supplied measurements.
+
+                            This is not a medical diagnosis.
+
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+
+                else:
+
+                    st.markdown(
+                        """
+                        <div class="info-box">
+
+                            ✓ The model predicts a lower
+                            likelihood of diabetes based on
+                            the supplied measurements.
+
+                            This is not a medical diagnosis.
+
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+
+            except Exception as error:
+
+                st.error(
+                    f"Diabetes prediction failed: {error}"
+                )
+
+
+# ============================================================
+# 12. ANEMIA PAGE
+# ============================================================
+
+elif page == "🧬 Anemia":
+
+    st.markdown(
+        '<div class="section-title">'
+        'Anemia Risk Assessment'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        '<div class="section-subtitle">'
+        'Enter the blood parameters required by the trained anemia model.'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+
+
+    with st.form("anemia_form"):
+
+        left, right = st.columns(2)
+
+
+        with left:
+
+            gender = st.selectbox(
+                "Gender",
+                [
+                    "Female",
+                    "Male",
+                ],
+            )
+
+            hemoglobin = st.number_input(
+                "Hemoglobin",
+                min_value=0.0,
+                max_value=30.0,
+                value=13.0,
+                step=0.1,
+            )
+
+            mch = st.number_input(
+                "MCH",
+                min_value=0.0,
+                max_value=50.0,
+                value=27.0,
+                step=0.1,
+            )
+
+
+        with right:
+
+            mchc = st.number_input(
+                "MCHC",
+                min_value=0.0,
+                max_value=50.0,
+                value=32.0,
+                step=0.1,
+            )
+
+            mcv = st.number_input(
+                "MCV",
+                min_value=0.0,
+                max_value=150.0,
+                value=85.0,
+                step=0.1,
+            )
+
+
+        submit = st.form_submit_button(
+            "🔍 Run Anemia Assessment"
+        )
+
+
+    if submit:
+
+        if (
+            "model_anemia" not in models
+            or
+            "scaler_anemia" not in models
+        ):
+
+            st.error(
+                "Anemia model or scaler is missing."
+            )
+
+        else:
+
+            try:
+
+                # Common anemia dataset encoding:
+                # Female = 0
+                # Male = 1
+
+                gender_value = (
+                    0
+                    if gender == "Female"
+                    else 1
+                )
+
+
+                features = np.array(
+                    [[
+
+                        gender_value,
+                        hemoglobin,
+                        mch,
+                        mchc,
+                        mcv,
+
+                    ]],
+                    dtype=float,
+                )
+
+
+                prediction, probability = (
+                    create_binary_prediction(
+                        models["model_anemia"],
+                        models["scaler_anemia"],
+                        features,
+                    )
+                )
+
+
+                if prediction == 1:
+
+                    result = (
+                        "Anemia detected by model"
+                    )
+
+                else:
+
+                    result = (
+                        "No anemia detected by model"
+                    )
+
+
+                show_result(
+                    "Anemia Model Output",
+                    result,
+                    probability,
+                )
+
+
+                if prediction == 1:
+
+                    st.markdown(
+                        """
+                        <div class="warning-box">
+
+                            ⚠️ The model indicates a possible
+                            anemia pattern based on the entered
+                            blood parameters.
+
+                            Please consult a qualified healthcare
+                            professional for proper evaluation.
+
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+
+                else:
+
+                    st.markdown(
+                        """
+                        <div class="info-box">
+
+                            ✓ The model does not indicate anemia
+                            based on the supplied measurements.
+
+                            This result should not be considered
+                            a medical diagnosis.
+
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+
+            except Exception as error:
+
+                st.error(
+                    f"Anemia prediction failed: {error}"
+                )
+
+
+# ============================================================
+# 13. THYROID PAGE
+# ============================================================
+
+elif page == "🦋 Thyroid":
+
+    st.markdown(
+        '<div class="section-title">'
+        'Thyroid Assessment'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        '<div class="section-subtitle">'
+        'Enter thyroid-related clinical and laboratory information.'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+
+
+    with st.form("thyroid_form"):
+
+        st.markdown(
+            "### Basic Information"
+        )
+
+        col1, col2 = st.columns(2)
+
+
+        with col1:
+
+            age = st.number_input(
+                "Age",
+                min_value=1,
+                max_value=120,
+                value=35,
+                step=1,
+            )
+
+
+        with col2:
+
+            sex = st.selectbox(
+                "Sex",
+                [
+                    "F",
+                    "M",
+                ],
+            )
+
+
+        st.markdown(
+            "### Medication & Clinical History"
+        )
+
+        c1, c2, c3, c4 = st.columns(4)
+
+
+        with c1:
+
+            on_thyroxine = st.checkbox(
+                "On Thyroxine"
+            )
+
+            query_on_thyroxine = st.checkbox(
+                "Query On Thyroxine"
+            )
+
+            on_antithyroid_medication = st.checkbox(
+                "On Antithyroid Medication"
+            )
+
+
+        with c2:
+
+            sick = st.checkbox(
+                "Sick"
+            )
+
+            pregnant = st.checkbox(
+                "Pregnant"
+            )
+
+            thyroid_surgery = st.checkbox(
+                "Thyroid Surgery"
+            )
+
+
+        with c3:
+
+            I131_treatment = st.checkbox(
+                "I131 Treatment"
+            )
+
+            query_hypothyroid = st.checkbox(
+                "Query Hypothyroid"
+            )
+
+            query_hyperthyroid = st.checkbox(
+                "Query Hyperthyroid"
+            )
+
+
+        with c4:
+
+            lithium = st.checkbox(
+                "Lithium"
+            )
+
+            goitre = st.checkbox(
+                "Goitre"
+            )
+
+            tumor = st.checkbox(
+                "Tumor"
+            )
+
+
+        c5, c6 = st.columns(2)
+
+
+        with c5:
+
+            hypopituitary = st.checkbox(
+                "Hypopituitary"
+            )
+
+
+        with c6:
+
+            psych = st.checkbox(
+                "Psych"
+            )
+
+
+        st.markdown(
+            "### Thyroid Laboratory Values"
+        )
+
+
+        lab1, lab2, lab3 = st.columns(3)
+
+
+        with lab1:
+
+            TSH = st.number_input(
+                "TSH",
+                min_value=0.0,
+                max_value=100.0,
+                value=2.0,
+                step=0.01,
+            )
+
+            T3 = st.number_input(
+                "T3",
+                min_value=0.0,
+                max_value=20.0,
+                value=1.5,
+                step=0.01,
+            )
+
+
+        with lab2:
+
+            TT4 = st.number_input(
+                "TT4",
+                min_value=0.0,
+                max_value=500.0,
+                value=100.0,
+                step=0.1,
+            )
+
+            T4U = st.number_input(
+                "T4U",
+                min_value=0.0,
+                max_value=5.0,
+                value=1.0,
+                step=0.01,
+            )
+
+
+        with lab3:
+
+            FTI = st.number_input(
+                "FTI",
+                min_value=0.0,
+                max_value=500.0,
+                value=100.0,
+                step=0.1,
+            )
+
+
+        submit = st.form_submit_button(
+            "🔍 Run Thyroid Assessment"
+        )
+
+
+    if submit:
+
+        required_models = [
+            "model_thyroid",
+            "scaler_thyroid",
+        ]
+
+
+        missing_models = [
+            name
+            for name in required_models
+            if name not in models
+        ]
+
+
+        if missing_models:
+
+            st.error(
+                "Thyroid model or scaler is missing: "
+                + ", ".join(missing_models)
+            )
+
+        else:
+
+            try:
+
+                data = {
+
+                    "age": age,
+
+                    "sex": sex,
+
+                    "on_thyroxine":
+                        on_thyroxine,
+
+                    "query_on_thyroxine":
+                        query_on_thyroxine,
+
+                    "on_antithyroid_medication":
+                        on_antithyroid_medication,
+
+                    "sick":
+                        sick,
+
+                    "pregnant":
+                        pregnant,
+
+                    "thyroid_surgery":
+                        thyroid_surgery,
+
+                    "I131_treatment":
+                        I131_treatment,
+
+                    "query_hypothyroid":
+                        query_hypothyroid,
+
+                    "query_hyperthyroid":
+                        query_hyperthyroid,
+
+                    "lithium":
+                        lithium,
+
+                    "goitre":
+                        goitre,
+
+                    "tumor":
+                        tumor,
+
+                    "hypopituitary":
+                        hypopituitary,
+
+                    "psych":
+                        psych,
+
+                    "TSH":
+                        TSH,
+
+                    "T3":
+                        T3,
+
+                    "TT4":
+                        TT4,
+
+                    "T4U":
+                        T4U,
+
+                    "FTI":
+                        FTI,
+                }
+
+
+                features = preprocess_thyroid(
+                    data
+                )
+
+
+                scaled_features = (
+                    models["scaler_thyroid"]
+                    .transform(features)
+                )
+
+
+                raw_prediction = (
+                    models["model_thyroid"]
+                    .predict(scaled_features)[0]
+                )
+
+
+                prediction = raw_prediction
+
+
+                # Decode prediction if a target encoder
+                # exists.
+
+                if (
+                    "thyroid_target_encoder"
+                    in models
+                ):
+
+                    encoder = (
+                        models[
+                            "thyroid_target_encoder"
+                        ]
+                    )
+
+                    try:
+
+                        prediction = (
+                            encoder
+                            .inverse_transform(
+                                np.asarray(
+                                    [raw_prediction]
+                                )
+                            )[0]
+                        )
+
+                    except Exception:
+
+                        prediction = raw_prediction
+
+
+                # Calculate model probability
+
+                if hasattr(
+                    models["model_thyroid"],
+                    "predict_proba"
+                ):
+
+                    probabilities = (
+                        models["model_thyroid"]
+                        .predict_proba(
+                            scaled_features
+                        )[0]
+                    )
+
+                    probability = float(
+                        np.max(probabilities)
+                    )
+
+                else:
+
+                    probability = 0.0
+
+
+                show_result(
+                    "Thyroid Model Output",
+                    str(prediction),
+                    probability,
+                )
+
+
+                st.markdown(
+                    """
+                    <div class="info-box">
+
+                        ℹ️ The thyroid model output represents
+                        the prediction generated by the trained
+                        machine-learning model.
+
+                        The result is not a medical diagnosis.
+
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+
+            except Exception as error:
+
+                st.error(
+                    f"Thyroid prediction failed: {error}"
+                )
+
+
+# ============================================================
+# 14. MODEL STATUS PAGE
+# ============================================================
+
+elif page == "📊 Model Status":
+
+    st.markdown(
+        '<div class="section-title">'
+        'Model Status'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        '<div class="section-subtitle">'
+        'Current availability of the machine-learning artifacts.'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+
+
+    model_display_names = {
+
+        "model_diabetes":
+            "Diabetes Model",
+
+        "scaler_diabetes":
+            "Diabetes Scaler",
+
+        "model_anemia":
+            "Anemia Model",
+
+        "scaler_anemia":
+            "Anemia Scaler",
+
+        "model_thyroid":
+            "Thyroid Model",
+
+        "scaler_thyroid":
+            "Thyroid Scaler",
+
+        "thyroid_target_encoder":
+            "Thyroid Target Encoder",
+    }
+
+
+    for key, filename in {
+
+        "model_diabetes":
+            "xgb_diabetes.pkl",
+
+        "scaler_diabetes":
+            "scaler_diabetes.pkl",
+
+        "model_anemia":
+            "lgb_anemia.pkl",
+
+        "scaler_anemia":
+            "scaler_anemia.pkl",
+
+        "model_thyroid":
+            "xgb_thyroid.pkl",
+
+        "scaler_thyroid":
+            "scaler_thyroid.pkl",
+
+        "thyroid_target_encoder":
+            "thyroid_target_encoder.pkl",
+
+    }.items():
+
+        col1, col2, col3 = st.columns(
+            [3, 2, 2]
+        )
+
+
+        with col1:
+
+            st.markdown(
+                f"**{model_display_names[key]}**"
+            )
+
+
+        with col2:
+
+            if key in models:
+
+                st.success(
+                    "Loaded"
+                )
+
+            else:
+
+                st.error(
+                    "Unavailable"
+                )
+
+
+        with col3:
+
+            st.caption(
+                filename
+            )
+
+
+    if model_errors:
+
+        st.markdown(
+            '<div class="warning-box">'
+            '<strong>Loading Issues</strong>'
+            '</div>',
+            unsafe_allow_html=True,
+        )
+
+
+        for key, error in model_errors.items():
+
+            st.error(
+                f"{key}: {error}"
+            )
+
+    else:
+
+        st.markdown(
+            """
+            <div class="info-box">
+
+                ✓ All configured model artifacts
+                are available and loaded successfully.
+
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+
+# ============================================================
+# 15. ABOUT PAGE
+# ============================================================
+
+elif page == "ℹ️ About":
+
+    st.markdown(
+        '<div class="section-title">'
+        'About Medi-Scan AI'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        '<div class="section-subtitle">'
+        'Information about this machine-learning demonstration.'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+
+
+    st.markdown(
+        """
+        <div class="disease-card">
+
+            <div class="disease-icon">
+                🩺
+            </div>
+
+            <div class="disease-name">
+                Medi-Scan AI
+            </div>
+
+            <div class="disease-description">
+
+                Medi-Scan AI is a multi-disease machine-learning
+                assessment dashboard designed to demonstrate how
+                trained predictive models can be integrated into
+                an interactive Streamlit application.
+
+            </div>
+
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+    st.markdown(
+        '<div class="section-title">'
+        'Supported Assessments'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+
+
+    about1, about2, about3 = st.columns(3)
+
+
+    with about1:
+
+        st.markdown(
+            """
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    MODULE 01
+                </div>
+
+                <div class="metric-value">
+                    🩸 Diabetes
+                </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+
+    with about2:
+
+        st.markdown(
+            """
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    MODULE 02
+                </div>
+
+                <div class="metric-value">
+                    🧬 Anemia
+                </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+
+    with about3:
+
+        st.markdown(
+            """
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    MODULE 03
+                </div>
+
+                <div class="metric-value">
+                    🦋 Thyroid
+                </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+
+    st.markdown(
+        """
+        <div class="warning-box">
+
+            ⚠️ <strong>Medical Disclaimer</strong><br><br>
+
+            Medi-Scan AI is intended for educational,
+            research, and demonstration purposes only.
+
+            The predictions generated by this application
+            may be inaccurate and must not be used as a
+            substitute for professional medical advice,
+            diagnosis, or treatment.
+
+            Always consult a qualified healthcare
+            professional regarding health concerns.
+
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+# ============================================================
+# 16. FOOTER
+# ============================================================
+
+st.markdown(
+    """
+    <div class="footer">
+
+        Medi-Scan AI • Multi-Disease AI Assessment Dashboard
+        <br>
+        Educational / Research Use Only
+
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
