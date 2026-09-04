@@ -1,36 +1,19 @@
-# Multi-Disease AI Health Assessment Service 🩺
+This directory includes a few sample datasets to get you started.
 
-An end-to-end Machine Learning pipeline and FastAPI web service designed to assess health risk profiles across three medical domains simultaneously: **Thyroid Conditions**, **Diabetes**, and **Anemia**.
+*   `california_housing_data*.csv` is California housing data from the 1990 US
+    Census; more information is available at:
+    https://docs.google.com/document/d/e/2PACX-1vRhYtsvc5eOR2FWNCwaBiKL6suIOrxJig8LcSBbmCbyYsayia_DvPOOBlXZ4CAlQ5nlDD8kTaIDRwrN/pub
 
-The system utilizes specialized ensemble tree architectures (XGBoost & LightGBM) and deep neural networks trained on clinical data, integrated into a unified RESTful API for production deployment.
+*   `mnist_*.csv` is a small sample of the
+    [MNIST database](https://en.wikipedia.org/wiki/MNIST_database), which is
+    described at: http://yann.lecun.com/exdb/mnist/
 
----
+*   `anscombe.json` contains a copy of
+    [Anscombe's quartet](https://en.wikipedia.org/wiki/Anscombe%27s_quartet); it
+    was originally described in
 
-## 📌 Features
+    Anscombe, F. J. (1973). 'Graphs in Statistical Analysis'. American
+    Statistician. 27 (1): 17-21. JSTOR 2682899.
 
-* **Multi-Disease Risk Analysis**: Dedicated models trained for Thyroid multi-class classification, Diabetes binary classification, and Anemia prediction.
-* **Unified API Engine**: Single `/predict/all` endpoint allowing frontends (React, Mobile, etc.) to query multiple health metrics in a single API request.
-* **Class Imbalance Handling**: Trained with **SMOTE** oversampling to optimize sensitivity and precision for minority medical classes.
-* **Production-Ready FastAPI Backend**: Includes automatic interactive Swagger UI documentation, input verification via Pydantic, and CORS middleware configured for web clients.
-
----
-
-## 📁 Repository Structure
-
-```text
-├── app.py                      # FastAPI application and prediction endpoints
-├── requirements.txt            # Python dependencies
-├── README.md                   # Project documentation
-│
-├── Thyroid-Dataset.csv         # Training raw dataset - Thyroid
-├── diabetes.csv                # Training raw dataset - Diabetes
-├── anemia.csv                  # Training raw dataset - Anemia
-│
-├── scaler_thyroid.pkl          # Saved StandardScaler for Thyroid features
-├── scaler_diabetes.pkl         # Saved StandardScaler for Diabetes features
-├── scaler_anemia.pkl           # Saved StandardScaler for Anemia features
-├── thyroid_target_encoder.pkl # Saved LabelEncoder for Thyroid target classes
-│
-├── xgb_thyroid.pkl             # Trained XGBoost Classifier (Thyroid)
-├── xgb_diabetes.pkl            # Trained XGBoost Classifier (Diabetes)
-└── lgb_anemia.pkl              # Trained LightGBM Classifier (Anemia)
+    and our copy was prepared by the
+    [vega_datasets library](https://github.com/altair-viz/vega_datasets/blob/4f67bdaad10f45e3549984e17e1b3088c731503d/vega_datasets/_data/anscombe.json).
